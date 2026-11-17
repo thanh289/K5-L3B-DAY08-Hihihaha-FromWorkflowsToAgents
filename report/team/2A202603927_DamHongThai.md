@@ -24,7 +24,6 @@ Phụ trách Shape B — single agent, triển khai trong [`src/lab8/shapes/sing
 - [`test_t11_retry_keeps_one_refund`](../../src/tests/test_public_matrix.py): kiểm tra retry không tạo refund trùng.
 - [`test_t12_crash_before_checkpoint_does_not_double_pay`](../../src/tests/test_public_matrix.py): kiểm tra crash rồi chạy tiếp không trả refund hai lần.
 - Kết quả xác thực trong workspace: `62 passed, 186 deselected` khi chạy ma trận chỉ với tham số shape `single`.
-- Lệnh chạy (từ thư mục `src`): `python -m pytest -q -m student -o addopts= tests\test_public_matrix.py -k "single and not workflow and not orchestrator and not swarm"`.
 
 ## 5. Công cụ AI đã dùng
 
