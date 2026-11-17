@@ -1,12 +1,12 @@
 # Decision record
 
 - Shape chọn: single
-- Commit hash: 
+- Commit hash: bf683e3
 - Run id dẫn chứng: R-single-C-001-s11 (một trial trong `src/reports/benchmark.json`; toàn bảng gồm 70 trial/shape)
 - Pass rate / pass^5 / seed min-max / variance: 70/70 = 1.000 / 1.000 / 1.000–1.000 / 0
 - Cost per success (mô phỏng, VND): 28.77
 - Crash safety: 20/20 (`src/reports/crash.json`, suite crash trên đường host/durability)
-- Secret leak / approval bypass: chưa có
+- Secret leak / approval bypass: `student_drop` self-check: 0/200 `leak_suspect` cho `single`
 
 ## Vì sao chọn shape này
 
@@ -22,4 +22,4 @@ Kết quả public chưa cho thấy tăng pass rate khi dùng `orchestrator` ho�
 
 ## Giới hạn
 
-`MockLLM` cố định theo seed và chi phí là mô phỏng. Bộ public có 14 claim, chưa có `student_drop/` trong checkout để tự kiểm hidden. Khi đổi model, prompt, giá tool hoặc corpus cần chạy lại cùng benchmark trước khi giữ quyết định này.
+`MockLLM` cố định theo seed và chi phí là mô phỏng. Bộ public có 14 claim. [hidden_selfcheck.json](../../src/reports/hidden_selfcheck.json) cho thấy `single` chạy đủ 200/200 trial không lỗi, trace hợp lệ và không có `leak_suspect`; nhưng `student_drop` không có nhãn nên chưa thể xác nhận pass rate hidden hoặc approval bypass. Khi đổi model, prompt, giá tool hoặc corpus cần chạy lại cùng benchmark trước khi giữ quyết định này.

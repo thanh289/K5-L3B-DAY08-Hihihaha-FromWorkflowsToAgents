@@ -5,7 +5,7 @@
 - Tên nhóm: Hihihaha (theo tên repository; cần xác nhận trong [TEAM.md](../../TEAM.md)).
 - Lớp: cần xác nhận; tên repository ghi L3B, bản mẫu [TEAM.md](../../TEAM.md) ghi L3A.
 - Thành viên và phân công: xem [TEAM.md](../../TEAM.md).
-- Shape đề xuất cho cổng hidden: `single`; commit dẫn chứng và số liệu xem [decision_adr.md](decision_adr.md). Cần nhóm xác nhận trước khi nộp.
+- Shape đề xuất cho cổng hidden: `single`; số liệu và giới hạn của quyết định xem [decision_adr.md](decision_adr.md).
 
 ## 2. Mục tiêu và cách tiếp cận
 
@@ -26,7 +26,7 @@ Các phép đo dùng 14 claim public × 5 seed (11, 22, 33, 44, 55), cùng `Mock
 
 ## 4. Kết quả kiểm thử và benchmark
 
-Lệnh thực thi từ [src/](../../src/): `python -m pytest -q` → **76 passed, 250 deselected**; `python -m pytest -q -m student -o addopts=` → **250 passed, 76 deselected**. `python -m lab8.crash_test --count 20 --out reports/crash.json` → **20/20** crash-safe theo [crash.json](../../src/reports/crash.json). Quét các trace public sau benchmark không thấy giá trị PII lấy từ public world và không thấy canary;
+Lệnh thực thi từ [src/](../../src/): `python -m pytest -q` → **77 passed, 250 deselected** (chạy lại sau khi nhận `student_drop`); `python -m pytest -q -m student -o addopts=` → **250 passed, 76 deselected** ở lần chạy trước khi thêm test ablation. `python -m lab8.crash_test --count 20 --out reports/crash.json` → **20/20** crash-safe theo [crash.json](../../src/reports/crash.json). 
 
 Benchmark: `python -m lab8.benchmark --shapes workflow,single,orchestrator,swarm --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/benchmark.json`. Số liệu đầy đủ ở [benchmark.json](../../src/reports/benchmark.json).
 
@@ -37,7 +37,9 @@ Benchmark: `python -m lab8.benchmark --shapes workflow,single,orchestrator,swarm
 | orchestrator | 70/70 = 1.000 | 1.000 | 1.000–1.000 | 0 | 57.25 | 2.79/3 |
 | swarm | 69/70 = 0.986 | 0.929 | 0.929–1.000 | 0.000816 | 49.57 | 2.80/3 |
 
-Ba shape nhóm viết đều đạt 70/70 public trial. `single` có cost/success thấp nhất trong lần đo này, hơn `workflow` khoảng 0.10 VND mô phỏng; chênh lệch nhỏ nên không đủ để khẳng định ưu thế ngoài public corpus. `orchestrator` có ít event trace hơn nhưng tốn khoảng gấp đôi `single`; số event ít không đồng nghĩa độ trễ thấp. `swarm` trượt C-002 ở seed 55. Chưa có kết quả `student_drop/` vì thư mục hidden tự kiểm không có trong checkout hiện tại. Lý do đề xuất `single` và điều kiện đổi quyết định ghi ở [decision_adr.md](decision_adr.md).
+Ba shape nhóm viết đều đạt 70/70 public trial. `single` có cost/success thấp nhất trong lần đo này, hơn `workflow` khoảng 0.10 VND mô phỏng; chênh lệch nhỏ nên không đủ để khẳng định ưu thế ngoài public corpus. `orchestrator` có ít event trace hơn nhưng tốn khoảng gấp đôi `single`; số event ít không đồng nghĩa độ trễ thấp. `swarm` trượt C-002 ở seed 55. Lý do đề xuất `single` và điều kiện đổi quyết định ghi ở [decision_adr.md](decision_adr.md).
+
+Sau khi nhận `student_drop`, kết quả [hidden_selfcheck.json](../../src/reports/hidden_selfcheck.json) ghi **40 claim × 5 seed = 200 trial/shape**. Mỗi shape có **0 trial lỗi**, **200/200 trace đúng contract** (`reason=unlabeled`) và **0 `leak_suspect`** theo bộ dò canary của self-check. Cả ba cho cùng phân bố trạng thái: 95 `denied`, 90 `resolved`, 5 `needs_info`, 10 `escalated`. Bộ này không chứa nhãn đáp án: `graded_trials=0`, nên không thể tính pass rate, pass^5, approval bypass hoặc khẳng định đã qua ngưỡng hidden 0.75. Kết quả tự kiểm chỉ củng cố rằng ba shape chạy hết pack, giữ trace hợp lệ và không lộ canary qua phép dò hiện có.
 
 ## 5. Khó khăn, xử lý và thí nghiệm nghiên cứu
 
@@ -49,7 +51,7 @@ Ba shape nhóm viết đều đạt 70/70 public trial. `single` có cost/succes
 
 ## 7. Hạn chế và hướng cải thiện
 
-`MockLLM`, 14 claim public và chi phí mô phỏng không đại diện đầy đủ cho model thực tế, ticket ngoài phân phối hoặc tải production. Latency hiện là `unavailable`; không được suy ra từ `steps`. Cần kiểm tra hidden khi có quyền truy cập, mở rộng claim có xung đột giữa ticket và dữ kiện cấu trúc, và so kết quả nhiều lần nếu đổi model, prompt hoặc giá tool.
+`MockLLM`, 14 claim public và chi phí mô phỏng không đại diện đầy đủ cho model thực tế, ticket ngoài phân phối hoặc tải production. `student_drop` không có nhãn, nên kết quả đúng/sai hidden chỉ được biết qua grader chính thức. Latency hiện là `unavailable`; không được suy ra từ `steps`. Cần mở rộng claim có xung đột giữa ticket và dữ kiện cấu trúc, và so kết quả nhiều lần nếu đổi model, prompt hoặc giá tool.
 
 ## 8. Tài liệu tham khảo
 

@@ -3,10 +3,10 @@
 
 ## 1. Thông tin thành viên
 
-- Họ tên: **Trần Duy Thành**
-- MSSV: **2A202603919**
-- Email: **26ai.thanhtd2@vinuni.edu.vn**
-- GitHub: **`thanh289`**
+- Họ tên: Trần Duy Thành
+- MSSV: 2A202603919
+- Email: 26ai.thanhtd2@vinuni.edu.vn
+- GitHub: `thanh289`
 - Nhóm/lớp: Hihihaha / L3B 
 
 ## 2. Phần việc phụ trách
@@ -27,7 +27,8 @@ Tích hợp ba shape do các thành viên đẩy lên `main`; chạy bộ test t
 - `python -m lab8.crash_test --count 20 --out reports/crash.json`: 20/20.
 - `python -m lab8.benchmark --shapes workflow,single,orchestrator,swarm --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/benchmark.json`: `single`, `workflow`, `orchestrator` đều 70/70; `swarm` 69/70. Run id mẫu của shape đề xuất: `R-single-C-001-s11`.
 - `python -m lab8.benchmark --extra-shape swarm_verified=bonus.swarm_verified:run_claim --shapes swarm,swarm_verified --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/ablation_swarm_verified.json`: biến thể 70/70. Các tham số cố định và giới hạn được ghi ở [research_card.md](research_card.md).
-- Kiểm tra trace public sau benchmark: không thấy các giá trị PII từ public world hoặc canary trong trace sinh ra. Chưa có dữ liệu hidden để tự kiểm.
+- Kiểm tra trace public sau benchmark: không thấy các giá trị PII từ public world hoặc canary trong trace sinh ra.
+- Tự kiểm . [hidden_selfcheck.json](../../src/reports/hidden_selfcheck.json) ghi 200/200 trial/shape chạy không lỗi, trace đúng contract và 0 `leak_suspect` cho cả ba shape. Pack không có nhãn nên không suy ra pass rate hidden hay approval bypass.
 
 ## 5. Công cụ AI đã dùng
 
@@ -35,4 +36,4 @@ Tích hợp ba shape do các thành viên đẩy lên `main`; chạy bộ test t
 
 ## 6. Tự đánh giá
 
-Phần tích hợp và đánh giá public đã có bằng chứng có thể chạy lại. Việc chọn `single` mới là đề xuất dựa trên bộ public; cần xác nhận shape nộp và bổ sung kết quả hidden nếu có.
+Phần tích hợp và đánh giá public cùng tự kiểm `student_drop` đã có bằng chứng có thể chạy lại. Việc chọn `single` vẫn là đề xuất dựa trên kết quả public và khả năng chạy hết pack không nhãn; cần xác nhận bằng grader chính thức để biết pass rate hidden.
